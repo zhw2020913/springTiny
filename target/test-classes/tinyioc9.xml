@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+    <bean id="outputService" class="springStep.step9.test.OutputServiceImpl">
+    </bean>
+
+    <bean id="helloWorldService" class="springStep.step9.test.HelloWorldServiceImpl">
+        <property name="text" value="Hello World!"/>
+        <property name="outputService" ref="outputService"/>
+    </bean>
+
+    <bean id="timeInterceptor" class="springStep.step9.test.aop.TimerInterceptor">
+
+    </bean>
+
+    <bean id="autoProxyCreator" class="springStep.step9.code.aop.AspectJAwareAdvisorAutoProxyCreator"/>
+<!--   为什么这个地方注册AspectJAwareAdvisorAutoProxyCreator的bean? 因为爱？只是因为下面的AspectJExpressionPointcutAdvisor-->
+<!--    需要通过这个代理自动生成的工厂中进行调用封装-->
+    <bean id="aspectjAspect" class="springStep.step9.code.aop.AspectJExpressionPointcutAdvisor">
+        <property name="advice" ref="timeInterceptor"/>
+        <property name="expression" value="execution(* springStep.step9.test.*.*(..))"/>
+    </bean>
+
+</beans>
